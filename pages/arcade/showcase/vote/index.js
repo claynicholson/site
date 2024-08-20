@@ -134,27 +134,42 @@ const My = () => {
   }, [])
 
   const loadProjects = async () => {
-    const token = window.localStorage.getItem('arcade.authToken')
-    const response = await fetch('/api/arcade/showcase/projects/my', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`
+    const token = window.localStorage.getItem('arcade.authToken');
+  
+    try {
+      const response = await fetch('/api/arcade/showcase/cohort', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    }).catch(e => {
-      console.error(e)
-      setStatus('error')
-      setError(e)
-    })
-    const data = await response.json()
-    if (data.error) {
-      setStatus('error')
-      return
-    } else {
-      setProjects(data.projects)
-      setName(data.name)
-      setStatus('success')
+  
+      const data = await response.json();
+  
+      if (data.error) {
+        setStatus('error');
+        setError(data.error);
+        return;
+      }
+  
+      setProjects(data.projects);
+      setName(data.name);
+      setStatus('success');
+  
+      console.log("data", data);
+  
+    } catch (e) {
+      console.error(e);
+      setStatus('error');
+      setError(e);
     }
-  }
+  };
+  
 
   useEffect(async () => {
     loadProjects()
