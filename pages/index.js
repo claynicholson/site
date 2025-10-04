@@ -62,6 +62,7 @@ function Page({
   gameTitle,
   events,
   carouselCards,
+  blueprintData,
   context
 }) {
   let [gameImage, setGameImage] = useState('')
@@ -209,11 +210,10 @@ function Page({
           />
           <Announcement
             width="90vw"
-            copy="You're invited to the world's largest high-school game jam!"
-            caption="We're running a game jam in 100+ cities worldwide. Sign up to make a game in-person on September 27th & 28th!"
-            href="https://daydream.hackclub.com/?r=3928"
-            imgSrc="https://hc-cdn.hel1.your-objectstorage.com/s/v3/997e5fcca4f34cfee1a8d859e910e97a285521c4_icon-tight.png"
-          />
+            copy="Get up to $400 to make a hardware project!"
+            caption="Design a project and get a grant to make it real with Blueprint, Hack Club's largest hardware program"
+            href="https://blueprint.hackclub.com/?utm_source=site-announcement"
+            imgSrc="https://hc-cdn.hel1.your-objectstorage.com/s/v3/db8d0fd43bb664a8b07431b0262a7ca13c1602c7_blueprint_logo__img_.png"/>
           <Box
             sx={{
               width: '90vw',
@@ -733,7 +733,7 @@ function Page({
                 and make things together!
               </Text>
             </Box>
-            <Blueprint/>
+            <Blueprint blueprintData={blueprintData} stars={stars.onboard.stargazerCount} />
             <Daydream />
             <Som />
             <Athena />
@@ -1321,6 +1321,10 @@ export async function getStaticProps() {
   const { getConsoles } = require('./api/sprig-console')
   const consoleCount = await getConsoles()
 
+  // Blueprint: get project count
+  const { fetchBlueprint } = require('./api/blueprint')
+  const blueprintData = await fetchBlueprint()
+
   // Hackathons: get latest hackathons
   let hackathonsData
   try {
@@ -1357,7 +1361,8 @@ export async function getStaticProps() {
       slackData,
       stars,
       events,
-      carouselCards
+      carouselCards,
+      blueprintData
     },
     revalidate: 60
   }
